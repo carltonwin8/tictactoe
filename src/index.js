@@ -39,22 +39,31 @@ const Board = ({ val, clicked }) => {
 const Game = () => {
   const [val, setVal] = useState(Array(9).fill(""));
   const [nextPlayer, setNextPlayer] = useState("X");
-  const [history, setHistory] = useState([]);
+  const [history, setHistory] = useState([
+    { text: "Go to game start", position: -1, value: "Z" }
+  ]);
 
   const clicked = i => {
+    if (val[i] !== "") return;
+    setHistory([
+      ...history,
+      {
+        position: i,
+        value: nextPlayer,
+        text: `Go to move #${history.length}`
+      }
+    ]);
     setVal(val.map((item, idx) => (idx === i ? nextPlayer : item)));
-    setHistory([...history, { position: i, value: nextPlayer }]);
+
     setNextPlayer(nextPlayer === "X" ? "O" : "X");
   };
 
-  const moves = history.map(({ position, value }, idx) => {
-    console.log(idx, position, value);
-    return (
-      <li key={position}>
-        {idx}, {position}, {value}
-      </li>
-    );
-  });
+  const clickedHistory = (idx, position, value) => {
+    const newVal = Array(9).fill("");
+    for (let i = 1; i <= idx; i++)
+      newVal[history[i].position] = history[i].value;
+    setVal(newVal);
+  };
   return (
     <div className="game">
       <div className="game-board">
@@ -62,8 +71,15 @@ const Game = () => {
       </div>
       <div className="game-info">
         <div className="status">Next player: {nextPlayer}</div>
-        {console.log(moves)}
-        <ol>{moves}</ol>
+        <ol>
+          {history.map(({ position, value, text }, idx) => (
+            <li key={position}>
+              <button onClick={() => clickedHistory(idx, position, value)}>
+                {text}
+              </button>
+            </li>
+          ))}
+        </ol>
       </div>
     </div>
   );
