@@ -40,7 +40,7 @@ const Game = () => {
   const [val, setVal] = useState(Array(9).fill(""));
   const [nextPlayer, setNextPlayer] = useState("X");
   const [history, setHistory] = useState([
-    { text: "Go to game start", position: -1, value: "Z" }
+    { text: "Go to game start", position: -1, value: "X" }
   ]);
 
   const clicked = i => {
@@ -59,6 +59,7 @@ const Game = () => {
   };
 
   const clickedHistory = (idx, position, value) => {
+    setNextPlayer(idx === 0 ? "X" : history[idx].value === "X" ? "O" : "X");
     const newVal = Array(9).fill("");
     for (let i = 1; i <= idx; i++)
       newVal[history[i].position] = history[i].value;
